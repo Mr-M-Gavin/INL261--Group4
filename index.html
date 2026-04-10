@@ -1,41 +1,517 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lecturer Portfolio</title>
-<link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Gardener — Vincent Ndlovu · Belgium Campus</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,600&family=Lato:wght@300;400;700&display=swap" rel="stylesheet" />
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--moss:#3a5a40;--sage:#588157;--fern:#a3b18a;--cream:#faf6ef;--petal:#d4a96a;--dark:#1a2b1c;--dark2:#223d24;--dark3:#111a12;--font-display:'Playfair Display',serif;--font-body:'Lato',sans-serif;--ease-spring:cubic-bezier(.16,1,.3,1)}
+    html,body{height:100%}
+    body{font-family:var(--font-body);background:var(--dark3);color:var(--cream);cursor:none;overflow-x:hidden;overflow-y:auto}
+    a,button,input,textarea,select,label,[role="button"]{cursor:none!important}
+    a:focus-visible,button:focus-visible{outline:3px solid var(--petal)!important;outline-offset:3px;border-radius:2px}
+    .skip-link{position:absolute;top:-60px;left:1rem;background:var(--petal);color:var(--dark3);font-size:.78rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;padding:.6rem 1.2rem;border-radius:0 0 4px 4px;z-index:99999;transition:top .2s ease;cursor:auto!important}
+    .skip-link:focus{top:0}
+
+    /* CURSOR */
+    #cursor{position:fixed;width:36px;height:36px;border:1.5px solid var(--sage);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .3s var(--ease-spring),height .3s var(--ease-spring),border-color .3s ease,opacity .3s ease;mix-blend-mode:difference}
+    #cursor-dot{position:fixed;width:6px;height:6px;background:var(--petal);border-radius:50%;pointer-events:none;z-index:10000;transform:translate(-50%,-50%)}
+
+    /* CANVAS */
+    #bg-canvas{position:fixed;inset:0;z-index:0;pointer-events:none}
+
+    /* SIDEBAR */
+    .sidebar{position:fixed;left:0;top:0;height:100vh;width:210px;background:rgba(17,26,18,.96);backdrop-filter:blur(16px);border-right:1px solid rgba(88,129,87,.2);z-index:8000;display:flex;flex-direction:column;align-items:flex-start;padding:1.5rem 0;transform:translateX(-100%);transition:transform .45s var(--ease-spring)}
+    .sidebar.open{transform:translateX(0)}
+    .sidebar-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:7999;opacity:0;pointer-events:none;transition:opacity .4s ease}
+    .sidebar-overlay.visible{opacity:1;pointer-events:auto}
+    .sidebar-toggle{position:fixed;top:1.4rem;left:1.4rem;z-index:9000;background:rgba(17,26,18,.85);border:1px solid rgba(88,129,87,.35);border-radius:4px;padding:.5rem;width:42px;height:42px;cursor:none;display:flex;align-items:center;justify-content:center;transition:background .25s ease,border-color .25s ease,transform .25s var(--ease-spring)}
+    .sidebar-toggle:hover{background:rgba(88,129,87,.2);border-color:var(--sage);transform:scale(1.06)}
+    .toggle-icon{display:flex;flex-direction:column;gap:5px;width:22px}
+    .toggle-icon span{display:block;height:1.5px;background:var(--fern);border-radius:2px;transition:transform .35s var(--ease-spring),opacity .25s ease,width .35s var(--ease-spring);transform-origin:left center}
+    .toggle-icon span:nth-child(2){width:14px}.toggle-icon span:nth-child(3){width:18px}
+    .sidebar-toggle.is-open .toggle-icon span:nth-child(1){transform:rotate(45deg) translateY(-1px);width:22px}
+    .sidebar-toggle.is-open .toggle-icon span:nth-child(2){opacity:0;transform:translateX(-6px)}
+    .sidebar-toggle.is-open .toggle-icon span:nth-child(3){transform:rotate(-45deg) translateY(1px);width:22px}
+    .sidebar-nav{list-style:none;width:100%;display:flex;flex-direction:column;gap:.3rem;flex:1;padding-top:4.5rem}
+    .sidebar-link{display:flex;align-items:center;gap:1rem;width:100%;padding:.75rem 1.5rem .75rem 1.4rem;text-decoration:none;color:var(--fern);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;border-left:2px solid transparent;transition:color .25s ease,border-color .25s ease,background .25s ease}
+    .sidebar-link:hover{color:var(--cream);background:rgba(88,129,87,.1)}
+    .sidebar-link.active{color:var(--petal);border-left-color:var(--petal)}
+    .nav-icon{font-size:.65rem;color:inherit;flex-shrink:0;width:20px;text-align:center;transition:transform .3s var(--ease-spring)}
+    .sidebar-link:hover .nav-icon,.sidebar-link.active .nav-icon{transform:scale(1.3)}
+    .nav-label{opacity:0;transform:translateX(-10px);transition:opacity .3s ease .15s,transform .4s var(--ease-spring) .15s;pointer-events:none}
+    .sidebar.open .nav-label{opacity:1;transform:translateX(0);pointer-events:auto}
+    .sidebar-brand{font-family:var(--font-display);font-size:.75rem;font-weight:700;color:rgba(163,177,138,.5);letter-spacing:.12em;padding-left:1.1rem;opacity:0;transition:opacity .3s ease .2s}
+    .sidebar.open .sidebar-brand{opacity:1}
+
+    /* HERO */
+    .hero{position:relative;width:100vw;height:100vh;display:flex;align-items:center;overflow:hidden;z-index:1}
+    .stripe{position:absolute;right:-5%;top:0;width:52%;height:100%;background:var(--dark2);clip-path:polygon(12% 0,100% 0,100% 100%,0% 100%);z-index:0}
+    .season{position:absolute;top:2.5rem;right:3rem;font-family:var(--font-body);font-size:.7rem;letter-spacing:.25em;text-transform:uppercase;color:var(--fern);z-index:10}
+    .season span{color:var(--petal);font-weight:700}
+    .leaf-panel{position:absolute;right:6%;top:50%;transform:translateY(-50%);width:280px;height:420px;z-index:5;opacity:0;animation:fadeInPanel 1.2s var(--ease-spring) .6s forwards}
+    @keyframes fadeInPanel{to{opacity:1}}
+    .leaf-panel svg{width:100%;height:100%}
+    .draw-stem{stroke-dasharray:400;stroke-dashoffset:400;animation:drawPath 1.8s var(--ease-spring) 1s forwards}
+    .draw-branch{stroke-dasharray:200;stroke-dashoffset:200;animation:drawPath 1.2s var(--ease-spring) 1.6s forwards}
+    .draw-leaf{opacity:0;animation:fadeIn .8s ease 2.2s forwards}
+    @keyframes drawPath{to{stroke-dashoffset:0}}
+    @keyframes fadeIn{to{opacity:1}}
+    @keyframes slideUp{to{opacity:1;transform:translateY(0)}}
+    .hero-content{position:relative;z-index:10;padding-left:clamp(5rem,10vw,10rem);max-width:55%}
+    .eyebrow{font-size:.7rem;letter-spacing:.3em;text-transform:uppercase;color:var(--petal);margin-bottom:1.5rem;opacity:0;transform:translateY(12px);animation:slideUp .8s var(--ease-spring) .2s forwards}
+    .hero-title{font-family:var(--font-display);line-height:.92;margin-bottom:1.8rem}
+    .line-one{display:block;font-size:clamp(3.5rem,8vw,7rem);font-weight:400;font-style:italic;color:var(--fern);opacity:0;transform:translateY(20px);animation:slideUp .9s var(--ease-spring) .35s forwards}
+    .line-two{display:block;font-size:clamp(5rem,12vw,11rem);font-weight:700;color:var(--cream);letter-spacing:-.02em;opacity:0;transform:translateY(20px);animation:slideUp .9s var(--ease-spring) .5s forwards}
+    .hero-subtitle{font-size:clamp(.9rem,1.5vw,1.1rem);color:var(--fern);font-weight:300;line-height:1.7;min-height:2.4em;margin-bottom:2.5rem;opacity:0;animation:fadeIn .8s ease 1.4s forwards}
+    .hero-cta{display:flex;gap:1.2rem;align-items:center;opacity:0;transform:translateY(12px);animation:slideUp .8s var(--ease-spring) 1.6s forwards;flex-wrap:wrap}
+    .btn-primary{display:inline-block;padding:.85rem 2.2rem;background:var(--sage);color:var(--dark3);font-family:var(--font-body);font-size:.8rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;text-decoration:none;transition:background .3s ease,transform .3s var(--ease-spring)}
+    .btn-primary:hover{background:var(--petal);transform:translateY(-2px)}
+    .btn-ghost{display:inline-block;padding:.85rem 2.2rem;border:1px solid var(--sage);color:var(--fern);font-family:var(--font-body);font-size:.8rem;font-weight:400;letter-spacing:.15em;text-transform:uppercase;text-decoration:none;transition:border-color .3s ease,color .3s ease,transform .3s var(--ease-spring)}
+    .btn-ghost:hover{border-color:var(--petal);color:var(--petal);transform:translateY(-2px)}
+    .btn-outline{display:inline-block;padding:.85rem 2.2rem;border:1px solid var(--petal);color:var(--petal);font-family:var(--font-body);font-size:.8rem;font-weight:400;letter-spacing:.15em;text-transform:uppercase;text-decoration:none;transition:background .3s ease,color .3s ease,transform .3s var(--ease-spring)}
+    .btn-outline:hover{background:var(--petal);color:var(--dark3);transform:translateY(-2px)}
+    .scroll-cue{position:absolute;bottom:2.5rem;left:clamp(5rem,10vw,10rem);display:flex;align-items:center;gap:1rem;z-index:10;opacity:0;animation:fadeIn 1s ease 2.4s forwards}
+    .scroll-cue span{font-size:.65rem;letter-spacing:.25em;text-transform:uppercase;color:var(--fern)}
+    .scroll-line{width:50px;height:1px;background:var(--sage);position:relative;overflow:hidden}
+    .scroll-line::after{content:'';position:absolute;left:-100%;top:0;width:100%;height:100%;background:var(--petal);animation:scanLine 2s ease-in-out 2.6s infinite}
+    @keyframes scanLine{0%{left:-100%}50%{left:0}100%{left:100%}}
+
+    /* ABOUT SECTION */
+    .about-section{position:relative;z-index:1;background:var(--dark2);padding:5rem clamp(1.5rem,8vw,8rem)}
+    .about-inner{display:grid;grid-template-columns:1fr 1fr;gap:3rem;max-width:1100px;margin:0 auto}
+    @media(max-width:768px){.about-inner{grid-template-columns:1fr}}
+    .about-eyebrow{font-size:.68rem;letter-spacing:.28em;text-transform:uppercase;color:var(--petal);margin-bottom:.8rem}
+    .about-title{font-family:var(--font-display);font-size:clamp(1.6rem,3vw,2.4rem);font-weight:700;color:var(--cream);margin-bottom:1.4rem;line-height:1.1}
+    .about-body p{font-size:.9rem;color:rgba(250,246,239,.78);line-height:1.8;margin-bottom:1rem}
+    .about-quote-card{background:rgba(17,26,18,.5);border:1px solid rgba(88,129,87,.25);border-left:3px solid var(--petal);border-radius:0 4px 4px 0;padding:1.4rem 1.6rem;margin-top:1.5rem}
+    .about-quote-card p{font-family:var(--font-display);font-style:italic;font-size:1rem;color:var(--cream);line-height:1.65;margin-bottom:.7rem}
+    .about-quote-card cite{font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;color:var(--petal);font-style:normal}
+    .about-highlights{display:flex;flex-direction:column;gap:1.2rem;margin-top:.5rem}
+    .highlight-item{display:flex;gap:1rem;align-items:flex-start;background:rgba(88,129,87,.08);border:1px solid rgba(88,129,87,.18);border-radius:4px;padding:1.1rem 1.2rem}
+    .highlight-icon{font-size:1.4rem;flex-shrink:0}
+    .highlight-body h4{font-family:var(--font-display);font-size:.95rem;font-weight:700;color:var(--cream);margin-bottom:.3rem}
+    .highlight-body p{font-size:.82rem;color:rgba(250,246,239,.7);line-height:1.6}
+
+    /* STATS STRIP */
+    .stats-strip{position:relative;z-index:1;display:flex;flex-wrap:wrap;justify-content:space-around;align-items:center;padding:4rem 8vw;background:var(--moss);border-top:1px solid rgba(255,255,255,.06)}
+    .stat{text-align:center}
+    .stat-number{display:block;font-family:var(--font-display);font-size:clamp(2.8rem,5vw,4.5rem);font-weight:700;color:var(--cream);line-height:1}
+    .stat-label{display:block;font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:var(--fern);margin-top:.5rem}
+    .fun-facts-strip{width:100%;padding-top:3rem;border-top:1px solid rgba(255,255,255,.07);margin-top:3rem}
+    .fun-facts-heading{font-size:.68rem;letter-spacing:.28em;text-transform:uppercase;color:var(--petal);margin-bottom:1.5rem;text-align:center}
+    .fun-facts-grid{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap}
+    .fact-card{position:relative;width:160px;height:160px;cursor:none;perspective:800px}
+    .fact-front,.fact-back{position:absolute;inset:0;border-radius:4px;backface-visibility:hidden;transition:transform .6s var(--ease-spring);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1rem;text-align:center}
+    .fact-front{background:rgba(88,129,87,.12);border:1px solid rgba(88,129,87,.3);transform:rotateY(0deg);gap:.6rem}
+    .fact-front .fact-icon{font-size:1.6rem;line-height:1}
+    .fact-front span:last-child{font-size:.68rem;letter-spacing:.15em;text-transform:uppercase;color:var(--fern)}
+    .fact-back{background:var(--moss);border:1px solid var(--sage);transform:rotateY(180deg);font-size:.78rem;line-height:1.55;color:var(--cream)}
+    .fact-card.flipped .fact-front{transform:rotateY(-180deg)}
+    .fact-card.flipped .fact-back{transform:rotateY(0deg)}
+
+    /* CAREER */
+    .career-section{padding:0 clamp(1.5rem,8vw,8rem) 6rem;background:var(--dark3);position:relative}
+    .section-header{position:sticky;top:0;z-index:100;text-align:center;padding:2rem 1rem 1.8rem;margin-bottom:3rem;background:inherit;backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,.06)}
+    .section-header.float-in{animation:floatIn .7s var(--ease-spring) forwards}
+    @keyframes floatIn{from{opacity:0;transform:translateY(-16px)}to{opacity:1;transform:translateY(0)}}
+    .section-eyebrow{font-size:.68rem;letter-spacing:.28em;text-transform:uppercase;color:var(--petal);margin-bottom:.6rem;opacity:.85}
+    .section-title{font-family:var(--font-display);font-size:clamp(1.6rem,3.5vw,2.6rem);font-weight:700;color:var(--cream);letter-spacing:-.01em}
+    .career-track{position:relative;max-width:860px;margin:0 auto}
+    .career-spine{position:absolute;left:50%;top:0;bottom:0;width:1px;background:linear-gradient(to bottom,transparent,var(--sage) 8%,var(--sage) 92%,transparent);transform:translateX(-50%)}
+    .milestone{display:flex;align-items:flex-start;margin-bottom:3.5rem;position:relative;opacity:0;transform:translateY(24px);transition:opacity .7s var(--ease-spring),transform .7s var(--ease-spring)}
+    .milestone.visible{opacity:1;transform:translateY(0)}
+    .milestone.left{flex-direction:row}.milestone.right{flex-direction:row-reverse}
+    .milestone-dot{position:absolute;left:50%;top:1.4rem;width:12px;height:12px;background:var(--sage);border:2px solid var(--dark3);border-radius:50%;transform:translate(-50%,-50%);transition:background .3s ease,transform .3s var(--ease-spring);z-index:2}
+    .milestone.active .milestone-dot{background:var(--petal);width:16px;height:16px}
+    .milestone:hover .milestone-dot{transform:translate(-50%,-50%) scale(1.4)}
+    .milestone-card{width:calc(50% - 2.5rem);background:var(--dark2);border:1px solid rgba(88,129,87,.2);border-radius:4px;padding:1.4rem 1.6rem;transition:border-color .3s ease,transform .3s var(--ease-spring)}
+    .milestone.left .milestone-card{margin-right:auto}.milestone.right .milestone-card{margin-left:auto}
+    .milestone-card:hover{border-color:var(--sage);transform:translateY(-3px)}
+    .milestone.active .milestone-card{border-color:var(--petal)}
+    .m-year{display:inline-block;font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;color:var(--petal);margin-bottom:.5rem}
+    .m-role{font-family:var(--font-display);font-size:1.1rem;font-weight:700;color:var(--cream);margin-bottom:.3rem}
+    .m-place{font-size:.75rem;color:var(--fern);margin-bottom:.8rem;letter-spacing:.05em}
+    .m-desc{font-size:.82rem;color:rgba(250,246,239,.7);line-height:1.65;margin-bottom:1rem}
+    .m-tags{display:flex;flex-wrap:wrap;gap:.4rem}
+    .m-tags span{font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;padding:.25rem .6rem;border:1px solid rgba(88,129,87,.4);color:var(--fern);border-radius:2px}
+
+    /* QUOTES */
+    .quote-section{padding:0 clamp(1.5rem,8vw,8rem) 6rem;background:var(--dark2);position:relative}
+    .quote-carousel{max-width:760px;margin:0 auto;position:relative}
+    .quote-track{position:relative;min-height:220px}
+    .quote-slide{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;transform:translateX(40px);transition:opacity .55s var(--ease-spring),transform .55s var(--ease-spring);pointer-events:none}
+    .quote-slide.active{opacity:1;transform:translateX(0);pointer-events:auto;position:relative}
+    .quote-slide.exit-left{opacity:0;transform:translateX(-40px)}
+    blockquote{text-align:center;padding:0 1rem}
+    .q-text{font-family:var(--font-display);font-size:clamp(1.1rem,2.5vw,1.5rem);font-style:italic;color:var(--cream);line-height:1.6;margin-bottom:1.5rem}
+    .q-author{font-size:.75rem;letter-spacing:.2em;text-transform:uppercase;color:var(--petal);font-style:normal}
+    .quote-controls{display:flex;align-items:center;justify-content:center;gap:1.5rem;margin-top:2.5rem}
+    .q-btn{background:none;border:1px solid var(--sage);color:var(--fern);width:44px;height:44px;border-radius:50%;font-size:1.1rem;display:flex;align-items:center;justify-content:center;transition:background .25s ease,border-color .25s ease,color .25s ease,transform .25s var(--ease-spring);cursor:none}
+    .q-btn:hover{background:var(--sage);color:var(--dark3);border-color:var(--sage);transform:scale(1.1)}
+    .q-dots{display:flex;gap:.5rem;align-items:center}
+    .q-dot{width:6px;height:6px;border-radius:50%;background:rgba(88,129,87,.35);border:none;padding:0;cursor:none;transition:background .3s ease,transform .3s var(--ease-spring)}
+    .q-dot.active{background:var(--petal);transform:scale(1.4)}
+
+    /* FOOTER */
+    .site-footer{position:relative;z-index:1;text-align:center;padding:2rem 1rem;background:var(--dark3);border-top:1px solid rgba(88,129,87,.15);font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;color:rgba(163,177,138,.45)}
+
+    @media(max-width:640px){
+      .career-spine{left:1.2rem}.milestone{flex-direction:column!important;padding-left:3rem}
+      .milestone-dot{left:1.2rem}.milestone-card{width:100%;margin:0!important}
+      .stats-strip{flex-wrap:wrap;gap:2rem}.fun-facts-grid{gap:.8rem}.fact-card{width:140px;height:140px}
+      .sidebar{width:52px}.sidebar.open{width:190px}.hero-content{max-width:85%}
+    }
+  </style>
 </head>
 <body>
-<!-- Skip to content (Accessibility) -->
-<a href="#main-content" class="skip-link">Skip to main content</a>
-<header>
-<h1>Lecturer Portfolio</h1>
-<nav>
-<ul>
-<li><a href="#about">About</a></li>
-<li><a href="#courses">Courses</a></li>
-<li><a href="#contact">Contact</a></li>
-</ul>
-</nav>
-</header>
-<main id="main-content">
-<section id="about">
-<h2>About the Lecturer</h2>
-<img src="lecturer.jpg" alt="Photo of the lecturer smiling">
-<p>This portfolio highlights the lecturer’s experience and achievements.</p>
-</section>
-<section id="courses">
-<h2>Courses</h2>
-<p>Information about courses taught.</p>
-</section>
-<section id="contact">
-<h2>Contact</h2>
-<button aria-label="Send email to lecturer">Email Lecturer</button>
-</section>
-</main>
-<footer>
-<p>© 2026 Lecturer Portfolio</p>
-</footer>
+  <a href="#hero" class="skip-link">Skip to main content</a>
+  <div id="cursor"></div>
+  <div id="cursor-dot"></div>
+  <canvas id="bg-canvas"></canvas>
+
+  <button class="sidebar-toggle" id="sidebar-toggle" aria-label="Toggle navigation" aria-expanded="false">
+    <span class="toggle-icon"><span></span><span></span><span></span></span>
+  </button>
+  <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+  <nav class="sidebar" id="sidebar" aria-label="Page navigation">
+    <ul class="sidebar-nav" role="list">
+      <li><a href="#hero" class="sidebar-link active" data-section="hero"><span class="nav-icon">⬡</span><span class="nav-label">Home</span></a></li>
+      <li><a href="#about" class="sidebar-link" data-section="about"><span class="nav-icon">⬡</span><span class="nav-label">About Vincent</span></a></li>
+      <li><a href="#stats" class="sidebar-link" data-section="stats"><span class="nav-icon">⬡</span><span class="nav-label">Stats &amp; Facts</span></a></li>
+      <li><a href="#career" class="sidebar-link" data-section="career"><span class="nav-icon">⬡</span><span class="nav-label">Responsibilities</span></a></li>
+      <li><a href="#quotes" class="sidebar-link" data-section="quotes"><span class="nav-icon">⬡</span><span class="nav-label">Quotes</span></a></li>
+      <li><a href="services.html" class="sidebar-link"><span class="nav-icon">⬡</span><span class="nav-label">Services</span></a></li>
+      <li><a href="contact_1.html" class="sidebar-link"><span class="nav-icon">⬡</span><span class="nav-label">Contact</span></a></li>
+    </ul>
+    <div class="sidebar-brand">TG</div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero" id="hero">
+    <div class="stripe"></div>
+    <div class="season">Belgium Campus <span>2026</span></div>
+    <div class="leaf-panel" id="leaf-panel">
+      <svg viewBox="0 0 300 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path class="draw-stem" d="M150 380 C150 300 145 260 148 200 C150 150 145 100 150 40" stroke="var(--sage)" stroke-width="2.5" stroke-linecap="round"/>
+        <path class="draw-branch" d="M149 280 C120 260 90 255 65 240" stroke="var(--fern)" stroke-width="1.8" stroke-linecap="round"/>
+        <path class="draw-branch" d="M149 250 C175 230 205 228 230 215" stroke="var(--fern)" stroke-width="1.8" stroke-linecap="round"/>
+        <path class="draw-branch" d="M149 200 C118 178 92 172 70 158" stroke="var(--fern)" stroke-width="1.5" stroke-linecap="round"/>
+        <path class="draw-branch" d="M149 170 C178 150 208 148 232 136" stroke="var(--fern)" stroke-width="1.5" stroke-linecap="round"/>
+        <ellipse class="draw-leaf" cx="60" cy="237" rx="22" ry="10" fill="var(--sage)" fill-opacity="0.3" stroke="var(--sage)" stroke-width="1" transform="rotate(-20 60 237)"/>
+        <ellipse class="draw-leaf" cx="234" cy="212" rx="22" ry="10" fill="var(--fern)" fill-opacity="0.3" stroke="var(--fern)" stroke-width="1" transform="rotate(15 234 212)"/>
+        <ellipse class="draw-leaf" cx="66" cy="155" rx="18" ry="9" fill="var(--sage)" fill-opacity="0.25" stroke="var(--sage)" stroke-width="1" transform="rotate(-25 66 155)"/>
+        <ellipse class="draw-leaf" cx="235" cy="133" rx="18" ry="9" fill="var(--fern)" fill-opacity="0.25" stroke="var(--fern)" stroke-width="1" transform="rotate(20 235 133)"/>
+        <circle class="draw-leaf" cx="150" cy="38" r="8" fill="var(--petal)" fill-opacity="0.6" stroke="var(--petal)" stroke-width="1.2"/>
+        <circle class="draw-leaf" cx="150" cy="38" r="4" fill="var(--cream)" fill-opacity="0.9"/>
+      </svg>
+    </div>
+    <div class="hero-content">
+      <p class="eyebrow">Garden Maintenance · Pool Care · Campus Safety</p>
+      <h1 class="hero-title">
+        <span class="line-one">The</span>
+        <span class="line-two">Gardener</span>
+      </h1>
+      <p class="hero-subtitle" id="typewriter-target"></p>
+      <div class="hero-cta">
+        <a href="services.html" class="btn-primary">Our Services</a>
+        <a href="#about" class="btn-ghost">Meet Vincent</a>
+        <a href="contact_1.html" class="btn-outline">Get in Touch</a>
+      </div>
+    </div>
+    <div class="scroll-cue"><span>Scroll</span><div class="scroll-line"></div></div>
+  </section>
+
+  <!-- ABOUT VINCENT — interview content -->
+  <section class="about-section" id="about">
+    <div class="about-inner">
+      <div class="about-body">
+        <p class="about-eyebrow">Meet the Gardener</p>
+        <h2 class="about-title">Vincent Ndlovu</h2>
+        <p>An informal interview was conducted with Vincent, a gardener at Belgium Campus iTversity, West Campus, to gain insight into his role and daily responsibilities.</p>
+        <p>Vincent explained that his primary duties include maintaining the campus gardens, watering plants, trimming vegetation, and ensuring that outdoor areas remain clean and well-presented. He is also responsible for cleaning and maintaining the pool area, ensuring it is safe and hygienic for use.</p>
+        <p>He highlighted that his work contributes to creating a comfortable and visually appealing environment for both students and staff. He also acknowledged that challenges such as weather conditions and managing large outdoor areas can make the job demanding — but he meets them with the same level of dedication every day.</p>
+        <div class="about-quote-card">
+          <p>"A clean and well-kept place makes people feel welcome, and I'm proud to be part of that."</p>
+          <cite>— Vincent Ndlovu · Campus Gardener, Belgium Campus iTversity</cite>
+        </div>
+      </div>
+      <div>
+        <div class="about-highlights">
+          <div class="highlight-item">
+            <span class="highlight-icon">🌿</span>
+            <div class="highlight-body">
+              <h4>Garden Maintenance</h4>
+              <p>Daily watering of plants, trimming vegetation, pruning shrubs, and planting seasonal flowers to keep every green space on campus healthy and beautiful year-round.</p>
+            </div>
+          </div>
+          <div class="highlight-item">
+            <span class="highlight-icon">💧</span>
+            <div class="highlight-body">
+              <h4>Pool Management</h4>
+              <p>Cleaning and maintaining the campus pool to ensure it remains safe and hygienic for use by the entire Belgium Campus community — students and staff alike.</p>
+            </div>
+          </div>
+          <div class="highlight-item">
+            <span class="highlight-icon">🛡️</span>
+            <div class="highlight-body">
+              <h4>Safety &amp; Cleanliness</h4>
+              <p>Ensuring all outdoor spaces are hazard-free, clean, and safe. This includes clearing debris, removing trip hazards, and maintaining walkways and communal areas daily.</p>
+            </div>
+          </div>
+          <div class="highlight-item">
+            <span class="highlight-icon">💪</span>
+            <div class="highlight-body">
+              <h4>Dedication &amp; Work Ethic</h4>
+              <p>"My job may seem simple, but it requires dedication and consistency every day." Despite demanding conditions, Vincent shows up with the same commitment — Mon–Fri 06:00–16:00, Sat 07:00–12:00.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <section class="stats-strip" id="stats">
+    <div class="stat"><span class="stat-number" data-target="6">0</span><span class="stat-label">Days a Week</span></div>
+    <div class="stat"><span class="stat-number" data-target="2">0</span><span class="stat-label">Core Duty Areas</span></div>
+    <div class="stat"><span class="stat-number" data-target="10">0</span><span class="stat-label">Hours Daily</span></div>
+    <div class="stat"><span class="stat-number" data-target="100">0</span><span class="stat-label">% Dedication</span></div>
+    <div class="fun-facts-strip">
+      <p class="fun-facts-heading">Vincent in His Own Words — Tap to Reveal</p>
+      <div class="fun-facts-grid">
+        <div class="fact-card" data-fact="I take pride in my work because I know the environment affects how people feel every day."><div class="fact-front"><span class="fact-icon">🌱</span><span>Tap to reveal</span></div><div class="fact-back"></div></div>
+        <div class="fact-card" data-fact="A clean and well-kept place makes people feel welcome, and I'm proud to be part of that."><div class="fact-front"><span class="fact-icon">🌿</span><span>Tap to reveal</span></div><div class="fact-back"></div></div>
+        <div class="fact-card" data-fact="My job may seem simple, but it requires dedication and consistency every day."><div class="fact-front"><span class="fact-icon">🍃</span><span>Tap to reveal</span></div><div class="fact-back"></div></div>
+        <div class="fact-card" data-fact="Weather and large outdoor areas can make the job demanding — but I show up every day."><div class="fact-front"><span class="fact-icon">☀️</span><span>Tap to reveal</span></div><div class="fact-back"></div></div>
+        <div class="fact-card" data-fact="I manage both the campus gardens and the pool — keeping both safe, clean, and beautiful."><div class="fact-front"><span class="fact-icon">💧</span><span>Tap to reveal</span></div><div class="fact-back"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESPONSIBILITIES -->
+  <section class="career-section" id="career">
+    <div class="section-header float-in">
+      <p class="section-eyebrow">Day-to-Day Role</p>
+      <h2 class="section-title">Responsibilities at Belgium Campus</h2>
+    </div>
+    <div class="career-track">
+      <div class="career-spine"></div>
+      <div class="milestone left">
+        <div class="milestone-dot"></div>
+        <div class="milestone-card">
+          <span class="m-year">Current Position</span>
+          <h3 class="m-role">Campus Gardener</h3>
+          <p class="m-place">Belgium Campus iTversity · West Campus, Grounds Department</p>
+          <p class="m-desc">Vincent serves as the dedicated gardener at Belgium Campus iTversity's West Campus, responsible for the full care of all outdoor spaces. His role ensures that the campus environment is welcoming, safe, and visually appealing for every student and staff member who walks through the grounds.</p>
+          <div class="m-tags"><span>Grounds Maintenance</span><span>Outdoor Spaces</span><span>West Campus</span></div>
+        </div>
+      </div>
+      <div class="milestone right">
+        <div class="milestone-dot"></div>
+        <div class="milestone-card">
+          <span class="m-year">Core Duty 1</span>
+          <h3 class="m-role">Garden Maintenance</h3>
+          <p class="m-place">Campus Gardens · All Outdoor Green Spaces</p>
+          <p class="m-desc">Vincent's primary responsibility is maintaining the campus gardens through daily watering of plants, trimming vegetation, and ensuring all outdoor areas remain clean and well-presented throughout the year. This includes mowing, edging, pruning, and planting seasonal flowers.</p>
+          <div class="m-tags"><span>Watering</span><span>Trimming</span><span>Pruning</span><span>Seasonal Planting</span></div>
+        </div>
+      </div>
+      <div class="milestone left">
+        <div class="milestone-dot"></div>
+        <div class="milestone-card">
+          <span class="m-year">Core Duty 2</span>
+          <h3 class="m-role">Pool Management</h3>
+          <p class="m-place">Campus Pool Area · Safety &amp; Hygiene</p>
+          <p class="m-desc">Vincent is also responsible for cleaning and maintaining the campus pool, ensuring it remains safe and hygienic for use by students and staff. This includes regular checks, skimming, chemical balancing, filter inspections, and full compliance with safety standards.</p>
+          <div class="m-tags"><span>Pool Cleaning</span><span>Chemical Balancing</span><span>Safety</span><span>Hygiene</span></div>
+        </div>
+      </div>
+      <div class="milestone right">
+        <div class="milestone-dot"></div>
+        <div class="milestone-card">
+          <span class="m-year">Key Impact</span>
+          <h3 class="m-role">Campus Environment &amp; Wellbeing</h3>
+          <p class="m-place">Belgium Campus · Community Impact</p>
+          <p class="m-desc">Vincent's work contributes to creating a comfortable and visually appealing environment for both students and staff. He understands that a well-kept outdoor space directly affects how people feel on campus each day — a responsibility he takes seriously and with great pride.</p>
+          <div class="m-tags"><span>Student Wellbeing</span><span>Campus Pride</span><span>Community</span></div>
+        </div>
+      </div>
+      <div class="milestone left active">
+        <div class="milestone-dot"></div>
+        <div class="milestone-card">
+          <span class="m-year">Mon – Sat · Every Week</span>
+          <h3 class="m-role">Dedication &amp; Consistency</h3>
+          <p class="m-place">Belgium Campus iTversity · 06:00 – 16:00 (Sat: 07:00–12:00)</p>
+          <p class="m-desc">Despite challenges like unpredictable weather and the sheer scale of managing large outdoor areas, Vincent approaches every day with the same commitment. As he said: "My job may seem simple, but it requires dedication and consistency every day." His contribution often goes unseen — but its impact is felt across the entire campus.</p>
+          <div class="m-tags"><span>Work Ethic</span><span>Commitment</span><span>Consistency</span><span>Pride</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- QUOTE WALL -->
+  <section class="quote-section" id="quotes">
+    <div class="section-header float-in">
+      <p class="section-eyebrow">In Vincent's own words</p>
+      <h2 class="section-title">Quote Wall</h2>
+    </div>
+    <div class="quote-carousel" id="quote-carousel">
+      <div class="quote-track" id="quote-track">
+        <div class="quote-slide active">
+          <blockquote>
+            <p class="q-text">"A clean and well-kept place makes people feel welcome, and I'm proud to be part of that."</p>
+            <cite class="q-author">— Vincent Ndlovu · Campus Gardener, Belgium Campus iTversity</cite>
+          </blockquote>
+        </div>
+        <div class="quote-slide">
+          <blockquote>
+            <p class="q-text">"I take pride in my work because I know the environment affects how people feel every day."</p>
+            <cite class="q-author">— Vincent Ndlovu · Campus Gardener, Belgium Campus iTversity</cite>
+          </blockquote>
+        </div>
+        <div class="quote-slide">
+          <blockquote>
+            <p class="q-text">"My job may seem simple, but it requires dedication and consistency every day."</p>
+            <cite class="q-author">— Vincent Ndlovu · Campus Gardener, Belgium Campus iTversity</cite>
+          </blockquote>
+        </div>
+        <div class="quote-slide">
+          <blockquote>
+            <p class="q-text">"Vincent ensures a safe and pleasant environment for every student and staff member — a contribution that often goes unseen."</p>
+            <cite class="q-author">— Belgium Campus iTversity · West Campus, Grounds Department</cite>
+          </blockquote>
+        </div>
+      </div>
+      <div class="quote-controls">
+        <button class="q-btn" id="q-prev" aria-label="Previous quote">&#8592;</button>
+        <div class="q-dots" id="q-dots"></div>
+        <button class="q-btn" id="q-next" aria-label="Next quote">&#8594;</button>
+      </div>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <p>© 2026 The Gardener — Vincent Ndlovu · Belgium Campus iTversity</p>
+  </footer>
+
+  <script>
+  'use strict';
+
+  /* 1. CUSTOM CURSOR */
+  (function(){
+    const ring=document.getElementById('cursor'),dot=document.getElementById('cursor-dot');
+    let mx=-100,my=-100,cx=-100,cy=-100;
+    document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
+    (function loop(){cx+=(mx-cx)*.15;cy+=(my-cy)*.15;ring.style.left=cx+'px';ring.style.top=cy+'px';dot.style.left=mx+'px';dot.style.top=my+'px';requestAnimationFrame(loop);})();
+    document.querySelectorAll('a,button').forEach(el=>{
+      el.addEventListener('mouseenter',()=>{ring.style.width='60px';ring.style.height='60px';ring.style.borderColor='var(--petal)';});
+      el.addEventListener('mouseleave',()=>{ring.style.width='36px';ring.style.height='36px';ring.style.borderColor='var(--sage)';});
+    });
+  })();
+
+  /* 2. PARTICLES */
+  (function(){
+    const canvas=document.getElementById('bg-canvas');if(!canvas)return;
+    const ctx=canvas.getContext('2d');let W,H,particles;
+    function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight;}
+    function P(){this.reset();}
+    P.prototype.reset=function(){this.x=Math.random()*W;this.y=Math.random()*H;this.r=Math.random()*1.8+.4;this.alpha=Math.random()*.5+.1;this.speed=Math.random()*.4+.1;this.angle=Math.random()*Math.PI*2;this.drift=(Math.random()-.5)*.01;const r=Math.random();this.colour=r<.6?'88,129,87':r<.9?'163,177,138':'212,169,106';};
+    P.prototype.update=function(){this.angle+=this.drift;this.x+=Math.cos(this.angle)*this.speed;this.y-=this.speed*.6;if(this.y<-10){this.reset();this.y=H+10;}};
+    P.prototype.draw=function(){ctx.beginPath();ctx.arc(this.x,this.y,this.r,0,Math.PI*2);ctx.fillStyle=`rgba(${this.colour},${this.alpha})`;ctx.fill();};
+    function init(){resize();particles=Array.from({length:120},()=>new P());}
+    function loop(){ctx.clearRect(0,0,W,H);particles.forEach(p=>{p.update();p.draw();});requestAnimationFrame(loop);}
+    window.addEventListener('resize',resize);init();loop();
+  })();
+
+  /* 3. LEAF PARALLAX */
+  (function(){
+    const p=document.getElementById('leaf-panel');if(!p)return;
+    window.addEventListener('scroll',()=>{p.style.transform=`translateY(calc(-50% + ${window.scrollY*.25}px))`;},{passive:true});
+  })();
+
+  /* 4. TYPEWRITER */
+  (function(){
+    const el=document.getElementById('typewriter-target');if(!el)return;
+    const phrases=['Keeping Belgium Campus beautiful, every day.','Where dedication meets the outdoors.','A clean space makes people feel welcome.','Rooted in care, grown with consistency.'];
+    let pI=0,cI=0,del=false;
+    function tick(){const cur=phrases[pI];if(!del){el.textContent=cur.slice(0,++cI);if(cI===cur.length){del=true;setTimeout(tick,2200);return;}}else{el.textContent=cur.slice(0,--cI);if(cI===0){del=false;pI=(pI+1)%phrases.length;setTimeout(tick,500);return;}}setTimeout(tick,del?30:55);}
+    setTimeout(tick,1600);
+  })();
+
+  /* 5. COUNTERS */
+  (function(){
+    const counters=document.querySelectorAll('.stat-number[data-target]');if(!counters.length)return;
+    function eOut(t){return t===1?1:1-Math.pow(2,-10*t);}
+    function animate(el){const target=parseInt(el.dataset.target,10),st=performance.now();(function u(now){const p=Math.min((now-st)/1800,1);el.textContent=Math.round(eOut(p)*target);if(p<1)requestAnimationFrame(u);})(performance.now());}
+    const obs=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){counters.forEach(animate);obs.disconnect();}}),{threshold:.3});
+    const s=document.getElementById('stats');if(s)obs.observe(s);
+  })();
+
+  /* 6. FUN FACTS */
+  (function(){
+    document.querySelectorAll('.fact-card').forEach(card=>{
+      card.querySelector('.fact-back').textContent=card.dataset.fact;
+      card.addEventListener('click',()=>card.classList.toggle('flipped'));
+      const ring=document.getElementById('cursor');
+      card.addEventListener('mouseenter',()=>{if(ring){ring.style.width='60px';ring.style.height='60px';ring.style.borderColor='var(--petal)';}});
+      card.addEventListener('mouseleave',()=>{if(ring){ring.style.width='36px';ring.style.height='36px';ring.style.borderColor='var(--sage)';}});
+    });
+  })();
+
+  /* 7. CAREER MILESTONES */
+  (function(){
+    const ms=document.querySelectorAll('.milestone');if(!ms.length)return;
+    const obs=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target);}}),{threshold:.25});
+    ms.forEach(m=>obs.observe(m));
+  })();
+
+  /* 8. QUOTE CAROUSEL */
+  (function(){
+    const slides=document.querySelectorAll('.quote-slide'),dotsWrap=document.getElementById('q-dots'),btnP=document.getElementById('q-prev'),btnN=document.getElementById('q-next');
+    if(!slides.length||!dotsWrap)return;
+    let cur=0,timer=null;
+    slides.forEach((_,i)=>{const d=document.createElement('button');d.className='q-dot'+(i===0?' active':'');d.setAttribute('aria-label',`Quote ${i+1}`);d.addEventListener('click',()=>goTo(i));dotsWrap.appendChild(d);});
+    function dots(){return dotsWrap.querySelectorAll('.q-dot');}
+    function goTo(idx,dir){
+      const ds=dots(),prev=cur;cur=(idx+slides.length)%slides.length;const isN=dir!=='prev';
+      slides[prev].classList.remove('active');slides[prev].classList.add(isN?'exit-left':'exit-right');ds[prev].classList.remove('active');
+      setTimeout(()=>slides[prev].classList.remove('exit-left','exit-right'),600);
+      slides[cur].style.transform=isN?'translateX(40px)':'translateX(-40px)';slides[cur].classList.add('active');ds[cur].classList.add('active');
+      clearInterval(timer);timer=setInterval(next,5000);
+    }
+    function next(){goTo(cur+1,'next');}function prev(){goTo(cur-1,'prev');}
+    btnN.addEventListener('click',next);btnP.addEventListener('click',prev);
+    document.addEventListener('keydown',e=>{if(e.key==='ArrowRight')next();if(e.key==='ArrowLeft')prev();});
+    const ring=document.getElementById('cursor');
+    [btnP,btnN].forEach(b=>{b.addEventListener('mouseenter',()=>{if(ring){ring.style.width='60px';ring.style.height='60px';ring.style.borderColor='var(--petal)';}});b.addEventListener('mouseleave',()=>{if(ring){ring.style.width='36px';ring.style.height='36px';ring.style.borderColor='var(--sage)';}});});
+    timer=setInterval(next,5000);
+  })();
+
+  /* 9. SIDEBAR */
+  (function(){
+    const sb=document.getElementById('sidebar'),tg=document.getElementById('sidebar-toggle'),ov=document.getElementById('sidebar-overlay');
+    const links=document.querySelectorAll('.sidebar-link'),sections=document.querySelectorAll('section[id]'),ring=document.getElementById('cursor');
+    if(!sb||!tg)return;
+    function open(){sb.classList.add('open');ov.classList.add('visible');tg.setAttribute('aria-expanded','true');tg.classList.add('is-open');}
+    function close(){sb.classList.remove('open');ov.classList.remove('visible');tg.setAttribute('aria-expanded','false');tg.classList.remove('is-open');}
+    tg.addEventListener('click',()=>sb.classList.contains('open')?close():open());
+    ov.addEventListener('click',close);
+    links.forEach(l=>{l.addEventListener('click',e=>{const h=l.getAttribute('href');if(h.startsWith('#')){e.preventDefault();const t=document.getElementById(h.slice(1));if(t)t.scrollIntoView({behavior:'smooth',block:'start'});}close();});});
+    document.addEventListener('keydown',e=>{if(e.key==='Escape')close();});
+    const actLink=id=>links.forEach(l=>l.classList.toggle('active',l.dataset.section===id));
+    const obs=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting)actLink(e.target.id);}),{threshold:.35});
+    sections.forEach(s=>obs.observe(s));
+    [tg,...sb.querySelectorAll('a')].forEach(el=>{
+      el.addEventListener('mouseenter',()=>{if(ring){ring.style.width='52px';ring.style.height='52px';ring.style.borderColor='var(--petal)';}});
+      el.addEventListener('mouseleave',()=>{if(ring){ring.style.width='36px';ring.style.height='36px';ring.style.borderColor='var(--sage)';}});
+    });
+  })();
+  </script>
 </body>
 </html>

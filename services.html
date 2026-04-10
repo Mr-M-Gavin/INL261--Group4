@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Services — The Gardener · Vincent Ndlovu</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,600&family=Lato:wght@300;400;700&display=swap" rel="stylesheet" />
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--moss:#3a5a40;--sage:#588157;--fern:#a3b18a;--cream:#faf6ef;--petal:#d4a96a;--dark2:#223d24;--dark3:#111a12;--font-display:'Playfair Display',serif;--font-body:'Lato',sans-serif;--ease-spring:cubic-bezier(.16,1,.3,1)}
+    body{font-family:var(--font-body);background:var(--dark3);color:var(--cream);cursor:none;overflow-x:hidden;overflow-y:auto}
+    a,button,input,textarea,select,label,[role="button"]{cursor:none!important}
+    a:focus-visible,button:focus-visible{outline:3px solid var(--petal)!important;outline-offset:3px;border-radius:2px}
+    .skip-link{position:absolute;top:-60px;left:1rem;background:var(--petal);color:var(--dark3);font-size:.78rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;padding:.6rem 1.2rem;border-radius:0 0 4px 4px;z-index:99999;transition:top .2s ease;cursor:auto!important}
+    .skip-link:focus{top:0}
+
+    /* CURSOR */
+    #cursor{position:fixed;width:36px;height:36px;border:1.5px solid var(--sage);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .3s var(--ease-spring),height .3s var(--ease-spring),border-color .3s ease;mix-blend-mode:difference}
+    #cursor-dot{position:fixed;width:6px;height:6px;background:var(--petal);border-radius:50%;pointer-events:none;z-index:10000;transform:translate(-50%,-50%)}
+
+    /* TOPBAR */
+    .topbar{position:sticky;top:0;z-index:500;display:flex;align-items:center;justify-content:space-between;padding:1.2rem clamp(1.5rem,6vw,5rem);background:rgba(17,26,18,.92);backdrop-filter:blur(12px);border-bottom:1px solid rgba(88,129,87,.15);gap:1.5rem}
+    .topbar-brand{font-family:var(--font-display);font-size:1.1rem;font-weight:700;font-style:italic;color:var(--cream);text-decoration:none;flex-shrink:0}
+    .topbar-nav{display:flex;gap:1.5rem;align-items:center}
+    .topbar-link{font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:var(--fern);text-decoration:none;transition:color .25s ease;padding-bottom:2px;border-bottom:1px solid transparent}
+    .topbar-link:hover{color:var(--cream)}
+    .topbar-link.active{color:var(--petal);border-bottom-color:var(--petal)}
+    .topbar-back{font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;color:var(--fern);text-decoration:none;transition:color .25s ease;flex-shrink:0}
+    .topbar-back:hover{color:var(--petal)}
+
+    /* PAGE HEADER */
+    .page-header{padding:4rem clamp(1.5rem,8vw,8rem) 3rem;position:relative;overflow:hidden;text-align:center}
+    .page-header::after{content:'';position:absolute;right:-10%;top:-20%;width:50%;height:140%;background:var(--dark2);clip-path:polygon(14% 0,100% 0,100% 100%,0% 100%);z-index:0}
+    .page-header-content{position:relative;z-index:1}
+    .page-eyebrow{font-size:.68rem;letter-spacing:.3em;text-transform:uppercase;color:var(--petal);margin-bottom:1rem}
+    .page-title{font-family:var(--font-display);font-size:clamp(2.4rem,5.5vw,5rem);font-weight:700;line-height:.95;color:var(--cream);margin-bottom:1.2rem}
+    .page-title em{color:var(--fern);font-style:italic}
+    .page-subtitle{font-size:clamp(.88rem,1.4vw,1.05rem);color:var(--fern);font-weight:300;line-height:1.7;max-width:520px;margin:0 auto}
+
+    /* ANIMATE ON SCROLL */
+    .animate-on-scroll{opacity:0;transform:translateY(24px);transition:opacity .7s var(--ease-spring),transform .7s var(--ease-spring)}
+    .animate-on-scroll.in-view{opacity:1;transform:translateY(0)}
+    .delay-1{transition-delay:.1s}.delay-2{transition-delay:.2s}.delay-3{transition-delay:.3s}.delay-4{transition-delay:.4s}.delay-5{transition-delay:.5s}
+
+    /* SERVICES GRID */
+    #services{padding:0 clamp(1.5rem,8vw,8rem) 6rem;text-align:center}
+    .services-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1.5rem;margin-top:1rem}
+    .flip-card{height:320px;perspective:1000px;cursor:none}
+    .flip-card-inner{position:relative;width:100%;height:100%;transition:transform .65s var(--ease-spring);transform-style:preserve-3d}
+    .flip-card:hover .flip-card-inner,.flip-card.flipped .flip-card-inner{transform:rotateY(180deg)}
+    .flip-card-front,.flip-card-back{position:absolute;inset:0;backface-visibility:hidden;border-radius:4px;padding:2rem 1.6rem;display:flex;flex-direction:column;justify-content:center}
+    .flip-card-front{background:var(--dark2);border:1px solid rgba(88,129,87,.2);align-items:center;text-align:center;gap:.6rem;transition:border-color .3s ease}
+    .flip-card:hover .flip-card-front{border-color:var(--sage)}
+    .flip-card-back{background:var(--moss);border:1px solid var(--sage);transform:rotateY(180deg)}
+    .card-icon{font-size:2.2rem;line-height:1;display:block;margin-bottom:.4rem}
+    .card-tag{font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;color:var(--petal);border:1px solid rgba(212,169,106,.35);padding:.2rem .6rem;border-radius:2px;align-self:center}
+    .flip-card-front h3{font-family:var(--font-display);font-size:1.15rem;font-weight:700;color:var(--cream)}
+    .flip-card-front p{font-size:.8rem;color:var(--fern);line-height:1.6}
+    .back-title{font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;color:var(--petal);margin-bottom:1rem}
+    .flip-card-back ul{list-style:none;display:flex;flex-direction:column;gap:.55rem}
+    .flip-card-back ul li{font-size:.82rem;color:var(--cream);padding-left:1.2rem;position:relative;line-height:1.5}
+    .flip-card-back ul li::before{content:'✦';position:absolute;left:0;color:var(--petal);font-size:.5rem;top:.2rem}
+    .flip-tip{margin-top:2rem;font-size:.75rem;color:rgba(163,177,138,.5);letter-spacing:.05em}
+
+    /* INTERVIEW SUMMARY SECTION */
+    .interview-strip{background:var(--dark2);padding:4rem clamp(1.5rem,8vw,8rem);border-top:1px solid rgba(88,129,87,.12)}
+    .interview-strip h2{font-family:var(--font-display);font-size:clamp(1.4rem,3vw,2rem);font-weight:700;color:var(--cream);margin-bottom:.6rem}
+    .interview-strip .eyebrow-sub{font-size:.65rem;letter-spacing:.25em;text-transform:uppercase;color:var(--petal);margin-bottom:1.2rem;display:block}
+    .interview-strip p{font-size:.9rem;color:rgba(250,246,239,.75);line-height:1.8;max-width:760px;margin-bottom:1rem}
+    .interview-quote{border-left:3px solid var(--petal);padding-left:1.4rem;margin:1.5rem 0;font-family:var(--font-display);font-style:italic;font-size:1.05rem;color:var(--cream);line-height:1.6}
+    .interview-quote cite{display:block;margin-top:.5rem;font-size:.65rem;letter-spacing:.18em;text-transform:uppercase;color:var(--petal);font-style:normal}
+
+    /* CTA STRIP */
+    .services-cta-strip{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:1.2rem;padding:3rem clamp(1.5rem,8vw,8rem) 5rem;border-top:1px solid rgba(88,129,87,.1)}
+    .services-cta-strip p{font-size:.9rem;color:var(--fern);letter-spacing:.05em;width:100%;text-align:center;margin-bottom:.4rem}
+    .btn-primary{display:inline-block;padding:.85rem 2.2rem;background:var(--sage);color:var(--dark3);font-family:var(--font-body);font-size:.8rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;text-decoration:none;transition:background .3s ease,transform .3s var(--ease-spring)}
+    .btn-primary:hover{background:var(--petal);transform:translateY(-2px)}
+    .btn-ghost{display:inline-block;padding:.85rem 2.2rem;border:1px solid var(--sage);color:var(--fern);font-family:var(--font-body);font-size:.8rem;font-weight:400;letter-spacing:.15em;text-transform:uppercase;text-decoration:none;transition:border-color .3s ease,color .3s ease,transform .3s var(--ease-spring)}
+    .btn-ghost:hover{border-color:var(--petal);color:var(--petal);transform:translateY(-2px)}
+    .site-footer{position:relative;z-index:1;text-align:center;padding:2rem 1rem;background:var(--dark3);border-top:1px solid rgba(88,129,87,.15);font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;color:rgba(163,177,138,.45)}
+
+    @media(max-width:640px){.topbar-nav{display:none}.services-grid{grid-template-columns:1fr}.flip-card{height:280px}}
+  </style>
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+  <div id="cursor"></div>
+  <div id="cursor-dot"></div>
+
+  <header class="topbar">
+    <a href="index.html" class="topbar-brand">The Gardener</a>
+    <nav class="topbar-nav" aria-label="Site navigation">
+      <a href="services.html" class="topbar-link active">Services</a>
+      <a href="contact_1.html" class="topbar-link">Contact</a>
+    </nav>
+    <a href="index.html" class="topbar-back">← Home</a>
+  </header>
+
+  <main id="main-content">
+
+    <div class="page-header">
+      <div class="page-header-content">
+        <p class="page-eyebrow animate-on-scroll">What Vincent Does</p>
+        <h1 class="page-title animate-on-scroll delay-1">Services &amp; <em>Responsibilities</em></h1>
+        <p class="page-subtitle animate-on-scroll delay-2">
+          Vincent Ndlovu, Campus Gardener at Belgium Campus iTversity, is responsible for keeping the West Campus grounds safe, clean, and beautiful every day. Hover a card to see what each service involves.
+        </p>
+      </div>
+    </div>
+
+    <!-- SERVICES CARD FLIP -->
+    <section id="services">
+      <div class="services-grid">
+
+        <div class="flip-card animate-on-scroll delay-1" tabindex="0" role="button" aria-label="Garden Maintenance — tap to see details">
+          <div class="flip-card-inner">
+            <div class="flip-card-front">
+              <span class="card-icon">🌱</span>
+              <span class="card-tag">Daily Duty</span>
+              <h3>Garden Maintenance</h3>
+              <p>Keeping the campus gardens healthy, clean, and beautiful every single day.</p>
+            </div>
+            <div class="flip-card-back">
+              <p class="back-title">What this involves</p>
+              <ul>
+                <li>Daily watering of all plants and flower beds</li>
+                <li>Trimming and edging vegetation</li>
+                <li>Pruning shrubs and trees</li>
+                <li>Planting seasonal flowers</li>
+                <li>Removing weeds and keeping areas tidy</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="flip-card animate-on-scroll delay-2" tabindex="0" role="button" aria-label="Pool Management — tap to see details">
+          <div class="flip-card-inner">
+            <div class="flip-card-front">
+              <span class="card-icon">💧</span>
+              <span class="card-tag">Specialist Task</span>
+              <h3>Pool Management</h3>
+              <p>Cleaning and maintaining the campus pool so it remains safe and hygienic for use.</p>
+            </div>
+            <div class="flip-card-back">
+              <p class="back-title">What this involves</p>
+              <ul>
+                <li>Daily cleaning and skimming</li>
+                <li>Chemical and pH balancing</li>
+                <li>Filter and pump inspections</li>
+                <li>Safety compliance checks</li>
+                <li>Seasonal pool preparation</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="flip-card animate-on-scroll delay-3" tabindex="0" role="button" aria-label="Campus Beautification — tap to see details">
+          <div class="flip-card-inner">
+            <div class="flip-card-front">
+              <span class="card-icon">🏡</span>
+              <span class="card-tag">Ongoing</span>
+              <h3>Campus Beautification</h3>
+              <p>Creating a comfortable and visually appealing environment for students and staff.</p>
+            </div>
+            <div class="flip-card-back">
+              <p class="back-title">What this involves</p>
+              <ul>
+                <li>Pathway and entrance upkeep</li>
+                <li>Seasonal plant displays</li>
+                <li>Outdoor furniture cleaning</li>
+                <li>Signage surrounds tidying</li>
+                <li>Event space preparation</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="flip-card animate-on-scroll delay-4" tabindex="0" role="button" aria-label="Safety and Cleanliness — tap to see details">
+          <div class="flip-card-inner">
+            <div class="flip-card-front">
+              <span class="card-icon">🛡️</span>
+              <span class="card-tag">Priority</span>
+              <h3>Safety &amp; Cleanliness</h3>
+              <p>Ensuring all outdoor spaces are hazard-free and safe for everyone on campus.</p>
+            </div>
+            <div class="flip-card-back">
+              <p class="back-title">What this involves</p>
+              <ul>
+                <li>Removing trip hazards daily</li>
+                <li>Clearing leaves and debris</li>
+                <li>Waste removal and sorting</li>
+                <li>Reporting maintenance faults</li>
+                <li>Wet surface hazard marking</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="flip-card animate-on-scroll delay-1" tabindex="0" role="button" aria-label="Outdoor Maintenance — tap to see details">
+          <div class="flip-card-inner">
+            <div class="flip-card-front">
+              <span class="card-icon">🔧</span>
+              <span class="card-tag">General</span>
+              <h3>Outdoor Maintenance</h3>
+              <p>General upkeep of all outdoor infrastructure and common areas across the West Campus.</p>
+            </div>
+            <div class="flip-card-back">
+              <p class="back-title">What this involves</p>
+              <ul>
+                <li>Mowing and lawn edging</li>
+                <li>Keeping walkways clear</li>
+                <li>Maintaining outdoor furniture</li>
+                <li>Checking irrigation systems</li>
+                <li>Reporting structural issues</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="flip-card animate-on-scroll delay-2" tabindex="0" role="button" aria-label="Dedication and Consistency — tap to see details">
+          <div class="flip-card-inner">
+            <div class="flip-card-front">
+              <span class="card-icon">💪</span>
+              <span class="card-tag">Work Ethic</span>
+              <h3>Dedication &amp; Consistency</h3>
+              <p>Showing up every day — Mon–Sat — with the same level of care and commitment.</p>
+            </div>
+            <div class="flip-card-back">
+              <p class="back-title">In Vincent's words</p>
+              <ul>
+                <li>Working Mon–Fri: 06:00–16:00</li>
+                <li>Working Sat: 07:00–12:00</li>
+                <li>Managing large outdoor areas daily</li>
+                <li>Adapting to weather challenges</li>
+                <li>"My job requires dedication and consistency every day."</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <p class="flip-tip animate-on-scroll delay-5">💡 Tap any card on mobile to reveal what the service involves</p>
+    </section>
+
+    <!-- INTERVIEW SUMMARY -->
+    <div class="interview-strip animate-on-scroll">
+      <span class="eyebrow-sub">From the Interview</span>
+      <h2>About Vincent's Work</h2>
+      <p>An informal interview was conducted with Vincent, a gardener at Belgium Campus iTversity, West Campus, to gain insight into his role and daily responsibilities.</p>
+      <p>Vincent explained that his primary duties include maintaining the campus gardens, watering plants, trimming vegetation, and ensuring that outdoor areas remain clean and well-presented. He is also responsible for cleaning and maintaining the pool area, ensuring it is safe and hygienic for use.</p>
+      <div class="interview-quote">
+        "I take pride in my work because I know the environment affects how people feel every day."
+        <cite>— Vincent Ndlovu · Campus Gardener, Belgium Campus iTversity</cite>
+      </div>
+      <p>He also mentioned that challenges such as weather conditions and managing large areas can make the job demanding. Despite this, his commitment never wavers.</p>
+      <div class="interview-quote">
+        "My job may seem simple, but it requires dedication and consistency every day."
+        <cite>— Vincent Ndlovu · Campus Gardener, Belgium Campus iTversity</cite>
+      </div>
+    </div>
+
+    <div class="services-cta-strip animate-on-scroll">
+      <p>Want to show appreciation for Vincent's work?</p>
+      <a href="contact_1.html" class="btn-primary">Get in Touch</a>
+      <a href="index.html" class="btn-ghost">Back to Home</a>
+    </div>
+
+  </main>
+
+  <footer class="site-footer">
+    <p>© 2026 The Gardener — Vincent Ndlovu · Belgium Campus iTversity</p>
+  </footer>
+
+  <script>
+  'use strict';
+
+  /* CUSTOM CURSOR */
+  (function(){
+    const ring=document.getElementById('cursor'),dot=document.getElementById('cursor-dot');
+    let mx=-100,my=-100,cx=-100,cy=-100;
+    document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
+    (function loop(){cx+=(mx-cx)*.15;cy+=(my-cy)*.15;ring.style.left=cx+'px';ring.style.top=cy+'px';dot.style.left=mx+'px';dot.style.top=my+'px';requestAnimationFrame(loop);})();
+    document.querySelectorAll('a,button').forEach(el=>{
+      el.addEventListener('mouseenter',()=>{ring.style.width='60px';ring.style.height='60px';ring.style.borderColor='var(--petal)';});
+      el.addEventListener('mouseleave',()=>{ring.style.width='36px';ring.style.height='36px';ring.style.borderColor='var(--sage)';});
+    });
+  })();
+
+  /* ANIMATE ON SCROLL */
+  (function(){
+    const els=document.querySelectorAll('.animate-on-scroll');if(!els.length)return;
+    const obs=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in-view');obs.unobserve(e.target);}}),{threshold:.15});
+    els.forEach(el=>obs.observe(el));
+  })();
+
+  /* FLIP CARDS */
+  (function(){
+    const ring=document.getElementById('cursor');
+    document.querySelectorAll('.flip-card').forEach(card=>{
+      card.addEventListener('click',()=>card.classList.toggle('flipped'));
+      card.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();card.classList.toggle('flipped');}});
+      card.addEventListener('mouseenter',()=>{if(ring){ring.style.width='60px';ring.style.height='60px';ring.style.borderColor='var(--petal)';}});
+      card.addEventListener('mouseleave',()=>{if(ring){ring.style.width='36px';ring.style.height='36px';ring.style.borderColor='var(--sage)';}});
+    });
+  })();
+  </script>
+</body>
+</html>
