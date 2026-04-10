@@ -1,0 +1,39 @@
+body {
+   font-family: Arial, sans-serif;
+   line-height: 1.6;
+}
+/* Skip link */
+.skip-link {
+   position: absolute;
+   top: -40px;
+   left: 0;
+   background: black;
+   color: white;
+   padding: 8px;
+}
+.skip-link:focus {
+   top: 0;
+}
+/* Navigation */
+nav ul {
+   display: flex;
+   gap: 15px;
+   list-style: none;
+}
+/* Buttons */
+button {
+   padding: 10px;
+   background-color: #005fcc;
+   color: white;
+   border: none;
+}
+/* Focus styles (VERY IMPORTANT for accessibility) */
+a:focus, button:focus {
+   outline: 3px solid orange;
+}
+/* Responsive design */
+@media (max-width: 768px) {
+   nav ul {
+       flex-direction: column;
+   }
+}
