@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Gardener — Vincent Ndlovu · Belgium Campus</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,600&family=Lato:wght@300;400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <a href="#hero" class="skip-link">Skip to main content</a>
+  <div id="cursor"></div>
+  <div id="cursor-dot"></div>
+  <canvas id="bg-canvas"></canvas>
+ 
+  <button class="sidebar-toggle" id="sidebar-toggle" aria-label="Toggle navigation" aria-expanded="false">
+    <span class="toggle-icon"><span></span><span></span><span></span></span>
+  </button>
+  <div class="sidebar-overlay" id="sidebar-overlay"></div>
+ 
+  <nav class="sidebar" id="sidebar" aria-label="Page navigation">
+    <ul class="sidebar-nav" role="list">
+      <li><a href="#hero" class="sidebar-link active" data-section="hero"><span class="nav-icon">⬡</span><span class="nav-label">Home</span></a></li>
+      <li><a href="#about" class="sidebar-link" data-section="about"><span class="nav-icon">⬡</span><span class="nav-label">About Vincent</span></a></li>
+      <li><a href="#stats" class="sidebar-link" data-section="stats"><span class="nav-icon">⬡</span><span class="nav-label">Stats &amp; Facts</span></a></li>
+      <li><a href="#career" class="sidebar-link" data-section="career"><span class="nav-icon">⬡</span><span class="nav-label">Responsibilities</span></a></li>
+      <li><a href="#quotes" class="sidebar-link" data-section="quotes"><span class="nav-icon">⬡</span><span class="nav-label">Quotes</span></a></li>
+      <li><a href="services.html" class="sidebar-link"><span class="nav-icon">⬡</span><span class="nav-label">Services</span></a></li>
+      <li><a href="contact.html" class="sidebar-link"><span class="nav-icon">⬡</span><span class="nav-label">Contact</span></a></li>
+    </ul>
+    <div class="sidebar-brand">TG</div>
+  </nav>
+ 
+  <!-- HERO -->
+  <section class="hero" id="hero">
+    <div class="stripe"></div>
+    <div class="season">Belgium Campus <span>2026</span></div>
+    <div class="leaf-panel" id="leaf-panel">
+      <svg viewBox="0 0 300 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path class="draw-stem" d="M150 380 C150 300 145 260 148 200 C150 150 145 100 150 40" stroke="var(--sage)" stroke-width="2.5" stroke-linecap="round"/>
+        <path class="draw-branch" d="M149 280 C120 260 90 255 65 240" stroke="var(--fern)" stroke-width="1.8" stroke-linecap="round"/>
+        <path class="draw-branch" d="M149 250 C175 230 205 228 230 215" stroke="var(--fern)" stroke-width="1.8" stroke-linecap="round"/>
+        <path class="draw-branch" d="M149 200 C118 178 92 172 70 158" stroke="var(--fern)" stroke-width="1.5" stroke-linecap="round"/>
+        <path class="draw-branch" d="M149 170 C178 150 208 148 232 136" stroke="var(--fern)" stroke-width="1.5" stroke-linecap="round"/>
+        <ellipse class="draw-leaf" cx="60" cy="237" rx="22" ry="10" fill="var(--sage)" fill-opacity="0.3" stroke="var(--sage)" stroke-width="1" transform="rotate(-20 60 237)"/>
+        <ellipse class="draw-leaf" cx="234" cy="212" rx="22" ry="10" fill="var(--fern)" fill-opacity="0.3" stroke="var(--fern)" stroke-width="1" transform="rotate(15 234 212)"/>
+        <ellipse class="draw-leaf" cx="66" cy="155" rx="18" ry="9" fill="var(--sage)" fill-opacity="0.25" stroke="var(--sage)" stroke-width="1" transform="rotate(-25 66 155)"/>
+        <ellipse class="draw-leaf" cx="235" cy="133" rx="18" ry="9" fill="var(--fern)" fill-opacity="0.25" stroke="var(--fern)" stroke-width="1" transform="rotate(20 235 133)"/>
+        <circle class="draw-leaf" cx="150" cy="38" r="8" fill="var(--petal)" fill-opacity="0.6" stroke="var(--petal)" stroke-width="1.2"/>
+        <circle class="draw-leaf" cx="150" cy="38" r="4" fill="var(--cream)" fill-opacity="0.9"/>
+      </svg>
+    </div>
+    <div class="hero-content">
+      <p class="eyebrow">Garden Maintenance · Pool Care · Campus Safety</p>
+      <h1 class="hero-title">
+        <span class="line-one">The</span>
+        <span class="line-two">Gardener</span>
+      </h1>
+      <p class="hero-subtitle" id="typewriter-target"></p>
+      <div class="hero-cta">
+        <a href="services.html" class="btn-primary">Our Services</a>
+        <a href="#about" class="btn-ghost">Meet Vincent</a>
+        <a href="contact.html" class="btn-outline">Get in Touch</a>
+      </div>
+    </div>
+    <div class="scroll-cue"><span>Scroll</span><div class="scroll-line"></div></div>
+  </section>
+ 
+  <!-- ABOUT -->
+  <section class="about-section" id="about">
+    <div class="about-inner">
+      <div class="about-body">
+        <p class="about-eyebrow">Meet the Gardener</p>
+        <h2 class="about-title">Vincent Ndlovu</h2>
+        <p>An informal interview was conducted with Vincent, a gardener at Belgium Campus iTversity, West Campus, to gain insight into his role and daily responsibilities.</p>
+        <p>Vincent explained that his primary duties include maintaining the campus gardens, watering plants, trimming vegetation, and ensuring that outdoor areas remain clean and well-presented. He is also responsible for cleaning and maintaining the pool area, ensuring it is safe and hygienic for use.</p>
+        <p>He highlighted that his work contributes to creating a comfortable and visually appealing environment for both students and staff. Challenges such as weather conditions and managing large outdoor areas can make the job demanding — but he meets them with dedication every day.</p>
+        <div class="about-quote-card">
+          <p>"A clean and well-kept place makes people feel welcome, and I'm proud to be part of that."</p>
+          <cite>— Vincent Ndlovu · Campus Gardener, Belgium Campus iTversity</cite>
+        </div>
+      </div>
+      <div>
+        <div class="about-highlights">
+          <div class="highlight-item">
+            <span class="highlight-icon">🌿</span>
+            <div class="highlight-body">
+              <h4>Garden Maintenance</h4>
+              <p>Daily watering, trimming, pruning, and planting seasonal flowers to keep every green space healthy and beautiful.</p>
+            </div>
+          </div>
+          <div class="highlight-item">
+            <span class="highlight-icon">💧</span>
+            <div class="highlight-body">
+              <h4>Pool Management</h4>
+              <p>Cleaning and maintaining the campus pool to ensure it remains safe and hygienic for use by the entire Belgium Campus community.</p>
+            </div>
+          </div>
+          <div class="highlight-item">
+            <span class="highlight-icon">🛡️</span>
+            <div class="highlight-body">
+              <h4>Safety &amp; Cleanliness</h4>
+              <p>Ensuring all outdoor spaces are hazard-free, clean, and safe — clearing debris, removing trip hazards, and maintaining walkways daily.</p>
+            </div>
+          </div>
+          <div class="highlight-item">
+            <span class="highlight-icon">💪</span>
+            <div class="highlight-body">
+              <h4>Dedication &amp; Work Ethic</h4>
+              <p>"My job may seem simple, but it requires dedication and consistency every day." Mon–Fri 06:00–16:00, Sat 07:00–12:00.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+ 
+  <!-- STATS -->
+  <section class="stats-strip" id="stats">
+    <div class="stat"><span class="stat-number" data-target="6">0</span><span class="stat-label">Days a Week</span></div>
+    <div class="stat"><span class="stat-number" data-target="2">0</span><span class="stat-label">Core Duty Areas</span></div>
+    <div class="stat"><span class="stat-number" data-target="10">0</span><span class="stat-label">Hours Daily</span></div>
+    <div class="stat"><span class="stat-number" data-target="100">0</span><span class="stat-label">% Dedication</span></div>
+    <div class="fun-facts-strip">
+      <p class="fun-facts-heading">Vincent in His Own Words — Tap to Reveal</p>
+      <div class="fun-facts-grid">
+        <div class="fact-card" data-fact="I take pride in my work because I know the environment affects how people feel every day."><div class="fact-front"><span class="fact-icon">🌱</span><span>Tap to reveal</span></div><div class="fact-back"></div></div>
+        <div class="fact-card" data-fact="A clean and well-kept place makes people feel welcome, and I'm proud to be part of that."><div class="fact-front"><span class="fact-icon">🌿</span><span>Tap to reveal</span></div><div class="fact-back"></div></div>
+        <div class="fact-card" data-fact="My job may seem simple, but it requires dedication and consistency every day."><div class="fact-front"><span class="fact-icon">🍃</span><span>Tap to reveal</span></div><div class="fact-back"></div></div>
+        <div class="fact-card" data-fact="Weather and large outdoor areas can make the job demanding — but I show up every day."><div class="fact-front"><span class="fact-icon">☀️</span><span>Tap to reveal</span></div><div class="fact-back"></div></div>
+        <div class="fact-card" data-fact="I manage both the campus gardens and the pool — keeping both safe, clean, and beautiful."><div class="fact-front"><span class="fact-icon">💧</span><span>Tap to reveal</span></div><div class="fact-back"></div></div>
+      </div>
+    </div>
+  </section>
+ 
+  <!-- RESPONSIBILITIES -->
+  <section class="career-section" id="career">
+    <div class="section-header float-in">
+      <p class="section-eyebrow">Day-to-Day Role</p>
+      <h2 class="section-title">Responsibilities at Belgium Campus</h2>
+    </div>
+    <div class="career-track">
+      <div class="career-spine"></div>
+      <div class="milestone left">
+        <div class="milestone-dot"></div>
+        <div class="milestone-card">
+          <span class="m-year">Current Position</span>
+          <h3 class="m-role">Campus Gardener</h3>
+          <p class="m-place">Belgium Campus iTversity · West Campus, Grounds Department</p>
+          <p class="m-desc">Vincent serves as the dedicated gardener at Belgium Campus iTversity's West Campus, responsible for the full care of all outdoor spaces. His role ensures the campus environment is welcoming, safe, and visually appealing for every student and staff member.</p>
+          <div class="m-tags"><span>Grounds Maintenance</span><span>Outdoor Spaces</span><span>West Campus</span></div>
+        </div>
+      </div>
+      <div class="milestone right">
+        <div class="milestone-dot"></div>
+        <div class="milestone-card">
+          <span class="m-year">Core Duty 1</span>
+          <h3 class="m-role">Garden Maintenance</h3>
+          <p class="m-place">Campus Gardens · All Outdoor Green Spaces</p>
+          <p class="m-desc">Daily watering of plants, trimming vegetation, and ensuring all outdoor areas remain clean and well-presented throughout the year. This includes mowing, edging, pruning, and planting seasonal flowers.</p>
+          <div class="m-tags"><span>Watering</span><span>Trimming</span><span>Pruning</span><span>Seasonal Planting</span></div>
+        </div>
+      </div>
+      <div class="milestone left">
+        <div class="milestone-dot"></div>
+        <div class="milestone-card">
+          <span class="m-year">Core Duty 2</span>
+          <h3 class="m-role">Pool Management</h3>
+          <p class="m-place">Campus Pool Area · Safety &amp; Hygiene</p>
+          <p class="m-desc">Cleaning and maintaining the campus pool, ensuring it remains safe and hygienic for use by students and staff. This includes regular checks, skimming, chemical balancing, filter inspections, and full safety compliance.</p>
+          <div class="m-tags"><span>Pool Cleaning</span><span>Chemical Balancing</span><span>Safety</span><span>Hygiene</span></div>
+        </div>
+      </div>
+      <div class="milestone right">
+        <div class="milestone-dot"></div>
+        <div class="milestone-card">
+          <span class="m-year">Key Impact</span>
+          <h3 class="m-role">Campus Environment &amp; Wellbeing</h3>
+          <p class="m-place">Belgium Campus · Community Impact</p>
+          <p class="m-desc">Vincent's work contributes to creating a comfortable and visually appealing environment for both students and staff. A well-kept outdoor space directly affects how people feel on campus — a responsibility he takes seriously every day.</p>
+          <div class="m-tags"><span>Student Wellbeing</span><span>Campus Pride</span><span>Community</span></div>
+        </div>
+      </div>
+      <div class="milestone left active">
+        <div class="milestone-dot"></div>
+        <div class="milestone-card">
+          <span class="m-year">Mon – Sat · Every Week</span>
+          <h3 class="m-role">Dedication &amp; Consistency</h3>
+          <p class="m-place">Belgium Campus iTversity · 06:00 – 16:00 (Sat: 07:00–12:00)</p>
+          <p class="m-desc">Despite challenges like unpredictable weather and the scale of managing large outdoor areas, Vincent approaches every day with the same commitment. "My job may seem simple, but it requires dedication and consistency every day."</p>
+          <div class="m-tags"><span>Work Ethic</span><span>Commitment</span><span>Consistency</span><span>Pride</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+ 
+  <!-- QUOTE WALL -->
+  <section class="quote-section" id="quotes">
+    <div class="section-header float-in">
+      <p class="section-eyebrow">In Vincent's own words</p>
+      <h2 class="section-title">Quote Wall</h2>
+    </div>
+    <div class="quote-carousel" id="quote-carousel">
+      <div class="quote-track" id="quote-track">
+        <div class="quote-slide active">
+          <blockquote>
+            <p class="q-text">"A clean and well-kept place makes people feel welcome, and I'm proud to be part of that."</p>
+            <cite class="q-author">— Vincent Ndlovu · Campus Gardener, Belgium Campus iTversity</cite>
+          </blockquote>
+        </div>
+        <div class="quote-slide">
+          <blockquote>
+            <p class="q-text">"I take pride in my work because I know the environment affects how people feel every day."</p>
+            <cite class="q-author">— Vincent Ndlovu · Campus Gardener, Belgium Campus iTversity</cite>
+          </blockquote>
+        </div>
+        <div class="quote-slide">
+          <blockquote>
+            <p class="q-text">"My job may seem simple, but it requires dedication and consistency every day."</p>
+            <cite class="q-author">— Vincent Ndlovu · Campus Gardener, Belgium Campus iTversity</cite>
+          </blockquote>
+        </div>
+        <div class="quote-slide">
+          <blockquote>
+            <p class="q-text">"Vincent ensures a safe and pleasant environment for every student and staff member — a contribution that often goes unseen."</p>
+            <cite class="q-author">— Belgium Campus iTversity · West Campus, Grounds Department</cite>
+          </blockquote>
+        </div>
+      </div>
+      <div class="quote-controls">
+        <button class="q-btn" id="q-prev" aria-label="Previous quote">&#8592;</button>
+        <div class="q-dots" id="q-dots"></div>
+        <button class="q-btn" id="q-next" aria-label="Next quote">&#8594;</button>
+      </div>
+    </div>
+  </section>
+ 
+  <footer class="site-footer">
+    <p>© 2026 The Gardener — Vincent Ndlovu · Belgium Campus iTversity</p>
+  </footer>
+ 
+  <script src="script.js"></script>
+</body>
+</html>
